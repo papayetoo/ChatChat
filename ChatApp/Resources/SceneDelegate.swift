@@ -21,11 +21,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         
-        let firstViewController = ConversationViewController()
-        window?.rootViewController = firstViewController
+        let tabbarController = UITabBarController()
+        let conversactionVC = ConversationViewController()
+        let chatNavController = UINavigationController(rootViewController: conversactionVC)
+//        chatNavController.navigationBar.prefersLargeTitles = true
+        chatNavController.tabBarItem = UITabBarItem(title: "Chat", image: UIImage(systemName: "message"), selectedImage: UIImage(systemName: "message.fill"))
+//        conversactionVC.navigationItem.title = "Chat"
+        chatNavController.navigationBar.topItem?.title = "Chat"
+        
+        let profileVC = ProfileViewController()
+        let profileNavController = UINavigationController(rootViewController: profileVC)
+        profileNavController.navigationBar.prefersLargeTitles = true
+        profileNavController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.crop.circle"), selectedImage: UIImage(systemName: "person.crop.circle.fill1"))
+        profileVC.navigationItem.title = "Profile"
+        
+        tabbarController.viewControllers = [chatNavController, profileNavController]
+        window?.rootViewController = tabbarController
         window?.makeKeyAndVisible()
     }
-
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.

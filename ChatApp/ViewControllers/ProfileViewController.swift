@@ -6,15 +6,37 @@
 //
 
 import UIKit
+import SnapKit
+import FirebaseAuth
 
 class ProfileViewController: UIViewController {
+    
+    let userInfoTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        view.backgroundColor = .systemBackground
+//        .navigationItem.rightBarButtonItem = UIBarButtonItem(title: "logout", style: .plain, target: self, action: #selector(didTapLogout))
+        view.addSubview(userInfoTableView)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "logout", style: .plain, target: self, action: #selector(didTapLogout))
     }
     
+    private func setSubviewLayout() {
+        userInfoTableView.snp.makeConstraints{
+            $0.top.bottom.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+        }
+    }
+    
+    
+    @objc
+    private func didTapLogout() {
+        print("tap logout")
+        FirebaseAuthManager.shared.logout()
+    }
 
     /*
     // MARK: - Navigation
