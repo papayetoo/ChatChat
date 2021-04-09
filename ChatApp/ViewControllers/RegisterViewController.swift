@@ -202,8 +202,8 @@ class RegisterViewController: UIViewController {
     
     @objc
     private func tapSignUpButton() {
-        guard let profileImage = profileImageView.image, let name = nameTextField.text, var email = idTextField.text, let password = pwTextField.text, !name.isEmpty, !email.isEmpty, !password.isEmpty else {return}
-        DispatchQueue.global().async { [weak self] in
+        guard let profileImage = profileImageView.image, let name = nameTextField.text, let email = idTextField.text, let password = pwTextField.text, !name.isEmpty, !email.isEmpty, !password.isEmpty else {return}
+        
             print("tap sign up button")
             print("email: \(email), password = \(password)")
             FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password, completion: {[weak self] authResult, error in
@@ -212,35 +212,50 @@ class RegisterViewController: UIViewController {
                     print("Error Creating user: \(email)")
                     return
                 }
-    //            let chatUser = ChatAppUser(name: name, emailAddress: email)
-    //            DatabaseManager
-    //                .shared
-    //                .insertUser(with: uid,
-    //                            user: chatUser,
-    //                            completion: { success in
-    //                                if success {
-    //                                    // upload Profile Image
-    //                                    guard let data = profileImage.pngData() else
-    //                                    {return}
-    //                                    let fileName = chatUser.profileImageFileName
-    //                                    StorageManager.shared.uploadProfileImage(with: data, fileName: fileName, completion: { result in
-    //                                        switch result {
-    //                                        case .success(let downloadUrl):
-    //                                            UserDefaults.standard.setValue(downloadUrl, forKey: "profile_picture_url")
-    //                                            print(downloadUrl)
-    //                                        case .failure(let error):
-    //                                            print("storage manager error: \(error)")
-    //                                        }
-    //                                    })
-    //                                }
-    //                            })
-                print("업로드 완료")
-                DispatchQueue.main.async {
-                    strongSelf.dismiss(animated: true, completion: nil)
+                guard let profileData = profileImage.pngData() else {return}
+                let profileFileName = "\(uid).png"
+                StorageManager.shared.uploadProfileImage(with: profileData, fileName: profileFileName) { result in
+                    switch result {
+                    case .success(let downloadUrl):
+                        let chatUser = ChatUser(name: name, emailAddress: email, profileDownloadURL: downloadUrl)
+                        DatabaseManager.shared.insertUser(with: uid, user: chatUser) {
+                            insertResult in
+                            switch insertResult {
+                            case true:
+                                print("데이터 insert 성공")
+                            case false:
+                                print("데이터 insert 실패")
+                            }
+                        }
+                    case .failure(let err):
+                        print("failed to upload profile image \(err)")
+                    }
                 }
+//                DatabaseManager
+//                    .shared
+//                    .insertUser(with: uid,
+//                                user: chatUser,
+//                                completion: { success in
+//                                    if success {
+//                                        // upload Profile Image
+//                                        guard let data = profileImage.pngData() else
+//                                        {return}
+//                                        let fileName = chatUser.profileImageFileName
+//                                        StorageManager.shared.uploadProfileImage(with: data, fileName: fileName, completion: { result in
+//                                            switch result {
+//                                            case .success(let downloadUrl):
+//                                                UserDefaults.standard.setValue(downloadUrl, forKey: "profile_picture_url")
+//                                                print(downloadUrl)
+//                                            case .failure(let error):
+//                                                print("storage manager error: \(error)")
+//                                            }
+//                                        })
+//                                    }
+//                                })
+                print("업로드 완료")
+                strongSelf.dismiss(animated: true, completion: nil)
             })
         }
-    }
 }
 
 extension RegisterViewController: UITextFieldDelegate  {

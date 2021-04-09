@@ -10,29 +10,24 @@ import FirebaseAuth
 
 class ConversationViewController: UIViewController {
     
-    lazy var loginIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView()
-        indicator.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-        indicator.center = self.view.center
-        
-        indicator.hidesWhenStopped = true
-        indicator.startAnimating()
-        return indicator
+    let userTableView: UITableView = {
+        let table = UITableView()
+        table.translatesAutoresizingMaskIntoConstraints = false
+        return table
     }()
     
-    let testlabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .red
-        label.text = "ConversationViewController"
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.isHidden = true
-        return label
-    }()
-
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        setBackgroundColor()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus.message"), style: .plain, target: self, action: #selector(didTapNewChat))
+    }
+    
+    @objc
+    private func didTapNewChat() {
+        print("didTapNewChat")
+        let newConversationVC = NewConversationViewController()
+        newConversationVC.modalPresentationStyle = .fullScreen
+        present(newConversationVC, animated: true, completion: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -53,21 +48,20 @@ class ConversationViewController: UIViewController {
             let loginVC = LoginViewController()
             loginVC.modalPresentationStyle = .fullScreen
             present(loginVC, animated: false, completion: nil)
-        } else {
-            print(FirebaseAuth.Auth.auth().currentUser?.email)
+            return
+        }
+        guard let email = FirebaseAuth.Auth.auth().currentUser?.email else {
+            return
+        }
+        StorageManager.shared.downloadProfileImage(with: email) { (result) in
+            switch result {
+            case .success(let profileImageData):
+                print(profileImageData)
+            case .failure(let error):
+                print(error)
+            }
         }
     }
-    
-    func setBackgroundColor() {
-        view.backgroundColor = .systemBackground
-        view.addSubview(testlabel)
-        
-        
-        NSLayoutConstraint.activate([
-            testlabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            testlabel.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor)
-        ])
-    }
-    
+
 }
  

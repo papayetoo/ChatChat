@@ -30,6 +30,7 @@ final class StorageManager {
              metaData, error in
             guard error == nil else {
                 // failed
+                print(error?.localizedDescription)
                 print("failed to upload data to firebase for profile image")
                 completion(.failure(StorageErrors.failedToUpload))
                 return
@@ -53,16 +54,34 @@ final class StorageManager {
     
     public func downloadProfileImage(with email: String,
                                      completion: @escaping DownloadImageCompletion) {
-        storage.child("").getData(maxSize: 20 * 1024 * 1024,
-                                  completion: { (data, error) in
-                                    guard let profileData = data, error == nil else {
-                                        completion(.failure(StorageErrors.failedToGetImage))
-                                        return
-                                    }
-                                    completion(.success(profileData))
-                                    print("download")
-                                  })
+        var safetyEmail = email.replacingOccurrences(of: ".", with: "-")
+        safetyEmail = safetyEmail.replacingOccurrences(of: ".", with: "-")
+        DispatchQueue.global().async { [weak self] in
+            self?.storage.child("images/\(safetyEmail)_profile_picture.png").getData(maxSize: 50 * 1024 * 1024,
+                                      completion: { (data, error) in
+                                        guard let profileData = data, error == nil else {
+                                            completion(.failure(StorageErrors.failedToGetImage))
+                                            return
+                                        }
+                                        completion(.success(profileData))
+                                        print("download")
+                                      })
+        }
     }
+    
+    public func downloadURL(for path: String, completion: @escaping (Result<URL, Error>) -> Void) {
+        let reference = storage.child(path)
+                        
+        reference.downloadURL(completion: { url, error in
+            guard let url = url, error == nil else {
+                print(error?.localizedDescription)
+                completion(.failure(StorageErrors.failedToGetDownloadUrl))
+                return
+            }
+            completion(.success(url))
+        })
+    }
+    
     
     public enum StorageErrors: Error {
         case failedToUpload

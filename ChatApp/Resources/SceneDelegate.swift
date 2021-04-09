@@ -25,7 +25,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let conversactionVC = ConversationViewController()
         let chatNavController = UINavigationController(rootViewController: conversactionVC)
 //        chatNavController.navigationBar.prefersLargeTitles = true
-        chatNavController.tabBarItem = UITabBarItem(title: "Chat", image: UIImage(systemName: "message"), selectedImage: UIImage(systemName: "message.fill"))
+        chatNavController.tabBarItem = UITabBarItem(title: "Chat", image: UIImage(systemName: "bubble.left"), selectedImage: UIImage(systemName: "bubble.left.fill"))
+        chatNavController.view.backgroundColor = .white
 //        conversactionVC.navigationItem.title = "Chat"
         chatNavController.navigationBar.topItem?.title = "Chat"
         

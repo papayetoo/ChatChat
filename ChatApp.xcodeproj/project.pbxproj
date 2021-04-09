@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		000CC1E4261DF0D200341C4A /* ChatUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000CC1E3261DF0D200341C4A /* ChatUser.swift */; };
 		003C08A12614B7F6004005DC /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003C08A02614B7F6004005DC /* Extensions.swift */; };
 		009F24D626089C8B00B88CF9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009F24D526089C8B00B88CF9 /* AppDelegate.swift */; };
 		009F24D826089C8B00B88CF9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009F24D726089C8B00B88CF9 /* SceneDelegate.swift */; };
@@ -28,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		000CC1E3261DF0D200341C4A /* ChatUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatUser.swift; sourceTree = "<group>"; };
 		003C08A02614B7F6004005DC /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		009F24D226089C8B00B88CF9 /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		009F24D526089C8B00B88CF9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 			isa = PBXGroup;
 			children = (
 				00D31E482608B8EC00D2EAA6 /* FirebaseAuthManager.swift */,
+				000CC1E3261DF0D200341C4A /* ChatUser.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -279,6 +282,7 @@
 				00D31E232608A44F00D2EAA6 /* VideoPlayerViewController.swift in Sources */,
 				009F24D626089C8B00B88CF9 /* AppDelegate.swift in Sources */,
 				00D31E292608A47300D2EAA6 /* ProfileViewController.swift in Sources */,
+				000CC1E4261DF0D200341C4A /* ChatUser.swift in Sources */,
 				003C08A12614B7F6004005DC /* Extensions.swift in Sources */,
 				00D31E492608B8EC00D2EAA6 /* FirebaseAuthManager.swift in Sources */,
 				009F24D826089C8B00B88CF9 /* SceneDelegate.swift in Sources */,

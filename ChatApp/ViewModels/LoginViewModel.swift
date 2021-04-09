@@ -38,7 +38,7 @@ class LoginViewModel {
             .disposed(by: disposeBag)
         // 로그인 버튼 enable 결정하는 함수
         enableLoginButton()
-        // 로그인 버튼 클릭시 FireBase Auth 이용한 로그인 실행
+//        /Users/papayetoo/Documents/ChatApp/ChatApp/ViewControllers/LoginViewController.swift        // 로그인 버튼 클릭시 FireBase Auth 이용한 로그인 실행
         touchLoginButton()
     }
     

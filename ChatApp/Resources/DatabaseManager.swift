@@ -34,13 +34,9 @@ extension DatabaseManager {
     }
     
     /// Insert new user to database
-//    public func insertUser(_ uid: with user: ChatAppUser) {
-//        database.child(user.emailAddress).setValue([
-//            "name": user.name
-//        ])
-//    }
     
-    public func insertUser(with uid: String, user: ChatAppUser, completion: @escaping (Bool) -> Void) {
+    
+    public func insertUser(with uid: String, user: ChatUser, completion: @escaping (Bool) -> Void) {
         database.child(uid).setValue([
             "email": user.emailAddress,
             "name": user.name,
@@ -51,21 +47,54 @@ extension DatabaseManager {
                 completion(false)
                 return
             }
-            completion(true)
+            
+            self.database.child("users")
+                .observeSingleEvent(of: .value, with: { snapshot in
+                    if var usersCollection = snapshot.value as? [[String: String]] {
+                        // append to user dictionary
+                        usersCollection.append([
+                            "name": user.name,
+                            "email": user.emailAddress
+                            ])
+                        self.database.child("users").setValue(usersCollection, withCompletionBlock: {  error, _ in
+                            guard error == nil else {
+                                completion(false)
+                                return
+                            }
+                            completion(true)
+                        })
+                    }
+                    else {
+                        let newCollection: [[String:String]] = [
+                            [
+                            "name": user.name,
+                            "email": user.emailAddress
+                            ]
+                        ]
+                        self.database.child("users").setValue(newCollection, withCompletionBlock: {  error, _ in
+                            guard error == nil else {
+                                completion(false)
+                                return
+                            }
+                            completion(true)
+                        })
+                    }
+            })
+//            completion(true)
+        })
+    }
+    
+    public func getUsers(completion: @escaping (Result<[[String:String]], Error>) -> Void) {
+        database.child("users").observe(.value, with: { snapshot in
+            guard let userData = snapshot.value as? [[String:String]] else {
+                completion(.failure(DatabaseError.SnapshotValueError))
+                return
+            }
+            completion(.success(userData))
         })
     }
 }
 
-
-struct ChatAppUser {
-    let name: String
-    let emailAddress: String
-    var safeEmail: String {
-        var safeEmail = emailAddress.replacingOccurrences(of: ".", with: "-")
-        safeEmail = safeEmail.replacingOccurrences(of: "@", with: "-")
-        return safeEmail
-    }
-    var profileImageFileName: String {
-        return "\(safeEmail)_profile_picture.png"
-    }
+enum DatabaseError: Error {
+    case SnapshotValueError
 }
